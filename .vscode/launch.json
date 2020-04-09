@@ -17,6 +17,13 @@
         "--no-reload"
       ],
       "jinja": true
+    },
+    {
+      "name": "Python Test",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": []
     }
   ]
 }
