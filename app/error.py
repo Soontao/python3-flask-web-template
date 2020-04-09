@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, current_app
 
 
 class FlaskBaseError(Exception):
@@ -8,12 +8,11 @@ class FlaskBaseError(Exception):
 
     status_code = 500
 
-    def __init__(self, message, status_code=None, payload=None):
+    def __init__(self, message, status_code=None):
         Exception.__init__(self)
         self.message = message
         if status_code is not None:
             self.status_code = status_code
-        self.payload = payload
 
     def to_dict(self):
         """
@@ -43,11 +42,11 @@ class ParameterLostError(ParameterError):
         ParameterError.__init__(self, f"{param_name} must be provided.")
 
 
-def set_error_handler(app: Flask):
+def set_error_handler():
     """
     set flask app error handler
     """
-    @app.errorhandler(Exception)
+    @current_app.errorhandler(Exception)
     def handle_invalid_usage(e: Exception):
         """
         handle invalid message
@@ -58,10 +57,24 @@ def set_error_handler(app: Flask):
             response.status_code = e.status_code
             return response
 
+        status_code = 500  # default error status code
+        error = str(e)  # default error message
+
+        if hasattr(e, "code"):
+            status_code = e.code
+        elif hasattr(e, "status_code"):
+            status_code = e.status_code
+
+        if hasattr(e, "message"):
+            error = e.message
+        elif hasattr(e, "description"):
+            error = e.description
+
         response = jsonify({
-            "code": 500,
+            "code": status_code,
             "error_type": e.__class__.__name__,
-            "error": str(e),
+            "error": error,
         })
-        response.status_code = 500
+
+        response.status_code = status_code
         return response
