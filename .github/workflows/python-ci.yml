@@ -45,7 +45,7 @@ jobs:
     - name: Lint with pylint
       run: |
         pip install pylint
-        pylint app/**/*.py
+        python -m pylint app
 
     - name: Test with pytest
       run: |
