@@ -22,7 +22,7 @@ pycodestyle==2.6.0
 pylint==2.5.3
 pyparsing==2.4.7
 pyrsistent==0.16.0
-pytest==5.4.2
+pytest==6.0.0
 PyYAML==5.3.1
 six==1.15.0
 typed-ast==1.4.1
